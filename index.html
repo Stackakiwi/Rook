@@ -52,6 +52,22 @@
   @media (pointer:coarse){#touch{display:block}.tapHint{display:none}}
   @media (max-width:680px){.panel{padding:18px;border-radius:14px}.menuGrid{grid-template-columns:1fr}.menuGrid .wide{grid-column:auto}.choices{grid-template-columns:1fr}.dialRow{grid-template-columns:1fr 1fr 1fr}.freqs{grid-template-columns:repeat(2,1fr)}.chapterGrid{grid-template-columns:1fr}.controlsTable{grid-template-columns:1fr}.joyBase{width:124px;height:124px}.joyKnob{left:34px;top:34px;width:56px;height:56px}.touchBtn{width:62px;height:62px}#tAttack{width:72px;height:72px}#tPotion{width:52px;height:52px}}
 
+\n  /* 004 mobile menu/overlay usability fix */
+  body.uiScroll{touch-action:pan-y;overscroll-behavior:none}
+  body.uiScroll .screen.show{overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-y;overscroll-behavior:contain}
+  body.uiScroll .screen.show .panel{touch-action:pan-y;-webkit-overflow-scrolling:touch}
+  @media (pointer:coarse), (max-width:680px){
+    body.uiScroll #shell{place-items:stretch}
+    body.uiScroll #frame{width:100vw;height:100dvh;max-width:none;max-height:none;box-shadow:none}
+    @supports not (height:100dvh){body.uiScroll #frame{height:100vh}}
+    body.uiScroll .screen.show{align-items:flex-start;justify-content:center;padding:calc(12px + env(safe-area-inset-top)) 10px calc(18px + env(safe-area-inset-bottom))}
+    body.uiScroll .screen.show .panel{width:min(760px,100%);max-height:none;overflow:visible;margin:auto 0;padding:18px 16px}
+    body.uiScroll #titlePanel{overflow:visible}
+    body.uiScroll #titleArt{height:150px;margin:-4px -2px 16px}
+    body.uiScroll button{min-height:48px}
+    body.uiScroll .menuGrid{gap:12px;margin-top:16px}
+  }
+
   /* 002 enhanced visual pass */
   #frame{border:1px solid rgba(164,215,255,.13);box-shadow:0 0 0 1px rgba(255,255,255,.03),0 24px 90px rgba(0,0,0,.82)}
   #vignette{background:radial-gradient(circle at 50% 46%,transparent 43%,rgba(0,4,10,.22) 70%,rgba(0,0,0,.68) 100%);mix-blend-mode:multiply}
@@ -141,7 +157,7 @@ const $ = s => document.querySelector(s);
 const canvas = $('#game'), ctx = canvas.getContext('2d');
 const W=960,H=540,TAU=Math.PI*2;
 const SAVE_KEY='rook_shattered_sigils_save_v1';
-const VERSION='Rook RPG 003 · Original Rook Restored';
+const VERSION='Rook RPG 004 · Mobile Menu Fix';
 
 const chapters = [
  {title:'Whisperwood', subtitle:'The First Broken Ward', terrain:'forest', sigil:'Leaf', glyph:'❧', boss:'Briar Warden', bossColor:'#7dd56d',
@@ -222,7 +238,7 @@ function circleRect(cx,cy,r,rect){const nx=clamp(cx,rect.x,rect.x+rect.w),ny=cla
 function hexToRgb(hex){const n=parseInt(hex.slice(1),16);return[(n>>16)&255,(n>>8)&255,n&255]}
 function rgba(hex,a){const [r,g,b]=hexToRgb(hex);return`rgba(${r},${g},${b},${a})`}
 function showToast(msg,time=1800){const t=$('#toast');t.textContent=msg;t.classList.add('toastShow');clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>t.classList.remove('toastShow'),time)}
-function setScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('show')); if(id) $(id).classList.add('show');}
+function setScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('show')); if(id) $(id).classList.add('show'); document.body.classList.toggle('uiScroll',!!id); if(id){const s=$(id); if(s) s.scrollTop=0;}}
 function isOverlay(){return !!document.querySelector('.screen.show:not(#titleScreen)')}
 function sigilStrip(el,count){el.innerHTML='';chapters.forEach((c,i)=>{const d=document.createElement('div');d.className='sigilPip '+(i<count?'on':'');d.textContent=c.glyph;d.title=`${i+1}. ${c.sigil}`;el.appendChild(d)});}
 let mode='menu',chapterIndex=0,replayMode=false;
