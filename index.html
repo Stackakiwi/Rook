@@ -52,16 +52,17 @@
   @media (pointer:coarse){#touch{display:block}.tapHint{display:none}}
   @media (max-width:680px){.panel{padding:18px;border-radius:14px}.menuGrid{grid-template-columns:1fr}.menuGrid .wide{grid-column:auto}.choices{grid-template-columns:1fr}.dialRow{grid-template-columns:1fr 1fr 1fr}.freqs{grid-template-columns:repeat(2,1fr)}.chapterGrid{grid-template-columns:1fr}.controlsTable{grid-template-columns:1fr}.joyBase{width:124px;height:124px}.joyKnob{left:34px;top:34px;width:56px;height:56px}.touchBtn{width:62px;height:62px}#tAttack{width:72px;height:72px}#tPotion{width:52px;height:52px}}
 
-\n  /* 004 mobile menu/overlay usability fix */
+  /* 005 mobile menu/overlay usability fix */
   body.uiScroll{touch-action:pan-y;overscroll-behavior:none}
-  body.uiScroll .screen.show{overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-y;overscroll-behavior:contain}
-  body.uiScroll .screen.show .panel{touch-action:pan-y;-webkit-overflow-scrolling:touch}
+  body.uiScroll #shell,body.uiScroll #frame{touch-action:pan-y}
+  body.uiScroll .screen.show{overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch;touch-action:pan-y!important;overscroll-behavior-y:contain}
+  body.uiScroll .screen.show .panel{touch-action:pan-y!important;-webkit-overflow-scrolling:touch;flex:0 0 auto}
   @media (pointer:coarse), (max-width:680px){
     body.uiScroll #shell{place-items:stretch}
     body.uiScroll #frame{width:100vw;height:100dvh;max-width:none;max-height:none;box-shadow:none}
     @supports not (height:100dvh){body.uiScroll #frame{height:100vh}}
-    body.uiScroll .screen.show{align-items:flex-start;justify-content:center;padding:calc(12px + env(safe-area-inset-top)) 10px calc(18px + env(safe-area-inset-bottom))}
-    body.uiScroll .screen.show .panel{width:min(760px,100%);max-height:none;overflow:visible;margin:auto 0;padding:18px 16px}
+    body.uiScroll .screen.show{align-items:flex-start;justify-content:center;padding:calc(12px + env(safe-area-inset-top)) 10px calc(34px + env(safe-area-inset-bottom));min-height:100%;height:100%;scrollbar-gutter:stable}
+    body.uiScroll .screen.show .panel{width:min(760px,100%);max-height:none;overflow:visible;margin:0;padding:18px 16px 24px}
     body.uiScroll #titlePanel{overflow:visible}
     body.uiScroll #titleArt{height:150px;margin:-4px -2px 16px}
     body.uiScroll button{min-height:48px}
@@ -729,7 +730,7 @@ joyEl.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();
 
 let autosaveTimer=0;
 function frame(ts){const dt=Math.min(.033,Math.max(.001,(ts-lastTs)/1000));lastTs=ts;if(mode==='game'){update(dt);autosaveTimer+=dt;if(autosaveTimer>12){autosaveTimer=0;persist()}}else gameTime+=dt*.35;render();requestAnimationFrame(frame)}
-updateTitle();makeWorld(0);requestAnimationFrame(frame);
+updateTitle();makeWorld(0);setScreen('#titleScreen');requestAnimationFrame(frame);
 </script>
 </body>
 </html>
